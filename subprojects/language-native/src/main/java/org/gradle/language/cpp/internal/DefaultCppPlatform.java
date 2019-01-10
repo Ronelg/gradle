@@ -16,22 +16,12 @@
 
 package org.gradle.language.cpp.internal;
 
-import org.gradle.language.cpp.CppPlatform;
-import org.gradle.nativeplatform.OperatingSystemFamily;
+import org.gradle.language.cpp.CppTargetMachine;
 import org.gradle.nativeplatform.TargetMachine;
-import org.gradle.nativeplatform.platform.internal.ImmutableDefaultNativePlatform;
-import org.gradle.nativeplatform.platform.internal.NativePlatformInternal;
+import org.gradle.nativeplatform.internal.DefaultTargetMachine;
 
-public class DefaultCppPlatform extends ImmutableDefaultNativePlatform implements CppPlatform {
-    private final OperatingSystemFamily operatingSystemFamily;
-
-    public DefaultCppPlatform(String name, TargetMachine targetMachine, NativePlatformInternal targetNativePlatform) {
-        super(name, targetNativePlatform.getOperatingSystem(), targetNativePlatform.getArchitecture());
-        this.operatingSystemFamily = targetMachine.getOperatingSystemFamily();
-    }
-
-    @Override
-    public OperatingSystemFamily getOperatingSystemFamily() {
-        return operatingSystemFamily;
+public class DefaultCppPlatform extends DefaultTargetMachine implements CppTargetMachine {
+    public DefaultCppPlatform(TargetMachine targetMachine) {
+        super(targetMachine.getOperatingSystemFamily(), targetMachine.getArchitecture());
     }
 }

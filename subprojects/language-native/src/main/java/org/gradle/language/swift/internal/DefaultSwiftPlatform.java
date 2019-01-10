@@ -16,22 +16,12 @@
 
 package org.gradle.language.swift.internal;
 
-import org.gradle.language.swift.SwiftPlatform;
-import org.gradle.nativeplatform.OperatingSystemFamily;
+import org.gradle.language.swift.SwiftTargetMachine;
 import org.gradle.nativeplatform.TargetMachine;
-import org.gradle.nativeplatform.platform.internal.ImmutableDefaultNativePlatform;
-import org.gradle.nativeplatform.platform.internal.NativePlatformInternal;
+import org.gradle.nativeplatform.internal.DefaultTargetMachine;
 
-public class DefaultSwiftPlatform extends ImmutableDefaultNativePlatform implements SwiftPlatform {
-    private final OperatingSystemFamily operatingSystemFamily;
-
-    public DefaultSwiftPlatform(String name, TargetMachine targetMachine, NativePlatformInternal targetNativePlatform) {
-        super(name, targetNativePlatform.getOperatingSystem(), targetNativePlatform.getArchitecture());
-        this.operatingSystemFamily = targetMachine.getOperatingSystemFamily();
-    }
-
-    @Override
-    public OperatingSystemFamily getOperatingSystemFamily() {
-        return operatingSystemFamily;
+public class DefaultSwiftPlatform extends DefaultTargetMachine implements SwiftTargetMachine {
+    public DefaultSwiftPlatform(TargetMachine targetMachine) {
+        super(targetMachine.getOperatingSystemFamily(), targetMachine.getArchitecture());
     }
 }

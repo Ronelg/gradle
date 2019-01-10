@@ -20,6 +20,8 @@ import net.rubygrapefruit.platform.SystemInfo;
 import org.gradle.internal.nativeintegration.NativeIntegrationUnavailableException;
 import org.gradle.internal.nativeintegration.services.NativeServices;
 import org.gradle.internal.os.OperatingSystem;
+import org.gradle.nativeplatform.TargetMachine;
+import org.gradle.nativeplatform.platform.NativePlatform;
 
 public class DefaultNativePlatform implements NativePlatformInternal {
     private final String name;
@@ -52,6 +54,10 @@ public class DefaultNativePlatform implements NativePlatformInternal {
 
     public static DefaultNativePlatform host() {
         return new HostPlatform();
+    }
+
+    public static NativePlatform of(TargetMachine targetMachine) {
+        return host().withArchitecture(Architectures.forInput(targetMachine.getArchitecture().getName()));
     }
 
     @Override

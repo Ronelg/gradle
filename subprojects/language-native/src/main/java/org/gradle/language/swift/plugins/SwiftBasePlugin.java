@@ -37,6 +37,7 @@ import org.gradle.language.swift.SwiftVersion;
 import org.gradle.language.swift.internal.DefaultSwiftBinary;
 import org.gradle.language.swift.internal.DefaultSwiftComponent;
 import org.gradle.language.swift.tasks.SwiftCompile;
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 import org.gradle.nativeplatform.toolchain.internal.ToolType;
 import org.gradle.nativeplatform.toolchain.internal.xcode.MacOSSdkPathLocator;
 import org.gradle.nativeplatform.toolchain.plugins.SwiftCompilerPlugin;
@@ -82,7 +83,7 @@ public class SwiftBasePlugin implements Plugin<Project> {
                 if (binary.isTestable()) {
                     task.getCompilerArgs().add("-enable-testing");
                 }
-                if (binary.getTargetPlatform().getOperatingSystemFamily().isMacOs()) {
+                if (binary.getTargetMachine().getOperatingSystemFamily().isMacOs()) {
                     task.getCompilerArgs().add("-sdk");
                     task.getCompilerArgs().add(locator.find().getAbsolutePath());
                 }
@@ -91,7 +92,7 @@ public class SwiftBasePlugin implements Plugin<Project> {
                 task.getModuleFile().set(buildDirectory.file(binary.getModule().map(moduleName -> "modules/" + names.getDirName() + moduleName + ".swiftmodule")));
                 task.getSourceCompatibility().set(binary.getSourceCompatibility());
 
-                task.getTargetPlatform().set(binary.getTargetPlatform());
+                task.getTargetPlatform().set(DefaultNativePlatform.of(binary.getTargetMachine()));
 
                 // TODO - make this lazy
                 task.getToolChain().set(binary.getToolChain());

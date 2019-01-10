@@ -17,7 +17,7 @@
 package org.gradle.language.nativeplatform.internal.toolchains
 
 import org.gradle.api.model.ObjectFactory
-import org.gradle.language.cpp.CppPlatform
+import org.gradle.language.cpp.CppTargetMachine
 import org.gradle.model.internal.registry.ModelRegistry
 import org.gradle.nativeplatform.MachineArchitecture
 import org.gradle.nativeplatform.OperatingSystemFamily
@@ -36,9 +36,9 @@ import spock.lang.Specification
 @UsesNativeServices
 class DefaultToolChainSelectorTest extends Specification {
     def modelRegistry = Stub(ModelRegistry)
-    def os = Stub(OperatingSystemInternal)
-    def arch = Stub(ArchitectureInternal)
-    def host = new DefaultNativePlatform("host", os, arch)
+    def os = Stub(OperatingSystemFamily)
+    def arch = Stub(MachineArchitecture)
+    def host = new DefaultNativePlatform("host", Stub(OperatingSystemInternal), Stub(ArchitectureInternal))
     def objectFactory = Mock(ObjectFactory)
     def selector = new DefaultToolChainSelector(modelRegistry, objectFactory)
 
@@ -56,13 +56,13 @@ class DefaultToolChainSelectorTest extends Specification {
         modelRegistry.realize(_, NativeToolChainRegistryInternal) >> registry
 
         when:
-        def result = selector.select(CppPlatform, targetMachine(architecture))
+        def result = selector.select(CppTargetMachine, targetMachine(architecture))
 
         then:
         result.toolChain == toolChain
-        result.targetPlatform instanceof CppPlatform
-        result.targetPlatform.operatingSystem == os
-        result.targetPlatform.architecture == Architectures.forInput(architecture)
+        result.targetPlatform instanceof CppTargetMachine
+        result.targetPlatform.operatingSystemFamily == os
+        result.targetPlatform.architecture == machineArchitecture(architecture)
         result.platformToolProvider == toolProvider
 
         and:
@@ -82,12 +82,16 @@ class DefaultToolChainSelectorTest extends Specification {
         ]
     }
 
-    def targetMachine(String architecture) {
-        def machineArchitecture = Stub(MachineArchitecture) {
+    def machineArchitecture(String architecture) {
+        return Stub(MachineArchitecture) {
             getName() >> architecture
         }
+    }
+
+    def targetMachine(String architecture) {
         return Stub(TargetMachine) {
-            getArchitecture() >> machineArchitecture
+            getOperatingSystemFamily() >> os
+            getArchitecture() >> machineArchitecture(architecture)
         }
     }
 }

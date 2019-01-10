@@ -34,6 +34,7 @@ import org.gradle.language.cpp.internal.DefaultCppComponent;
 import org.gradle.language.cpp.tasks.CppCompile;
 import org.gradle.language.nativeplatform.internal.Names;
 import org.gradle.language.plugins.NativeBasePlugin;
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 import org.gradle.nativeplatform.toolchain.internal.ToolType;
 import org.gradle.nativeplatform.toolchain.internal.plugins.StandardToolChainsPlugin;
 import org.gradle.swiftpm.internal.NativeProjectPublication;
@@ -89,7 +90,7 @@ public class CppBasePlugin implements Plugin<Project> {
                 if (binary.isOptimized()) {
                     task.setOptimized(true);
                 }
-                task.getTargetPlatform().set(binary.getTargetPlatform());
+                task.getTargetPlatform().set(DefaultNativePlatform.of(binary.getTargetMachine()));
                 task.getToolChain().set(binary.getToolChain());
                 task.getObjectFileDir().set(buildDirectory.dir("obj/" + names.getDirName()));
 
